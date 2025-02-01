@@ -1,16 +1,15 @@
 const { app, BrowserWindow } = require('electron');
 
 function createWindow() {
-  // Create the browser window.
   const win = new BrowserWindow({
     width: 850,
     height: 650,
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      // webSecurity: false  // Only if CORS issues
     }
   });
-
-  // Load index.html
+  
   win.loadFile('index.html');
 }
 
