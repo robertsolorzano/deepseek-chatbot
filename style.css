@@ -3,9 +3,11 @@
     padding: 0;
     box-sizing: border-box;
 }
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap');
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', sans-serif;
     background-color: #f4f4f9;
     display: flex;
     justify-content: center;
@@ -14,8 +16,8 @@ body {
 }
 
 #chat-container {
-    width: 400px;
-    height: 500px;
+    width: 600px;
+    height: 600px;
     display: flex;
     flex-direction: column;
     background-color: #ffffff;
@@ -28,6 +30,7 @@ body {
     flex-grow: 1;
     padding: 15px;
     overflow-y: auto;
+    scroll-behavior: smooth;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -73,9 +76,27 @@ body {
 
 .bot-message {
     background-color: #f1f1f1;
-    padding: 10px;
+    padding: 22px;
     border-radius: 8px;
     max-width: 75%;
     align-self: flex-end;
     word-wrap: break-word;
+}
+.bot-message code {
+    color: #ffffff;
+    background-color: #2F3437;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-family: 'Source Code Pro';
+}
+
+.bot-message pre {
+    background-color: #f4f4f4;
+    padding: 1em;
+    border-radius: 4px;
+    overflow-x: auto;
+}
+
+.bot-message p {
+    margin: 0.5em 0;
 }

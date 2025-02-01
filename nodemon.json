@@ -1,6 +1,6 @@
 {
     "watch": ["."],
-    "ext": "js,html,json",
+    "ext": "js,html",
     "exec": "electron ."
   }
   
