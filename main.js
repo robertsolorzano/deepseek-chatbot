@@ -6,7 +6,7 @@ function createWindow() {
     height: 650,
     webPreferences: {
       nodeIntegration: true,
-      // webSecurity: false  // Only if CORS issues
+      webSecurity: true
     }
   });
   
