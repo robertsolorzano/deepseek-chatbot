@@ -164,4 +164,14 @@ document.addEventListener('DOMContentLoaded', () => {
     chatBox.appendChild(messageDiv);
     debouncedScroll();
   }
+
+  document.getElementById('user-input').addEventListener('input', function() {
+    const sendButton = document.getElementById('send-btn');
+    if (this.value.trim() !== '') {
+      sendButton.classList.add('visible');
+    } else {
+      sendButton.classList.remove('visible');
+    }
+  });
+  
 });
