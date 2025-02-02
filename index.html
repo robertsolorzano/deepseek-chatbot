@@ -3,21 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeepSeek Chatbot</title>
+    <title>DeepSeek Chat Interface</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="chat-container">
+        <div id="chat-header">
+            <h1>DeepSeek Chat</h1>
+            <div id="chat-controls">
+                <div class="toggle-container">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="think-toggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span class="toggle-label">Show Reasoning</span>
+                </div>
+            </div>
+        </div>
         <div id="chat-box">
             <!-- Messages will be displayed here -->
         </div>
         <div id="input-area">
-            <input type="text" id="user-input" placeholder="Type your message..." />
-            <button id="send-btn">Send</button>
+            <textarea 
+                id="user-input" 
+                placeholder="Reply to DeepSeek..."
+                rows="1">
+            </textarea>
+            <button id="send-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13"/>
+                </svg>
+            </button>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
     <script src="chat.js"></script>
 </body>
 </html>
