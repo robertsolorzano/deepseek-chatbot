@@ -13,10 +13,54 @@ document.addEventListener('DOMContentLoaded', () => {
           console.error('Highlight.js error:', err);
         }
       }
-      return code; // Use original code if language not found
+      return code;
     },
     langPrefix: 'hljs language-'
   });
+
+  // function creates and returns a button with copy functionality
+  function createCopyButton(codeBlock) {
+    const button = document.createElement('button');
+    button.className = 'copy-button';
+    // fa icon for copy button
+    button.innerHTML = '<i class="fa-regular fa-copy"></i>';
+    
+    // Add click handler to the button
+    button.addEventListener('click', async () => {
+      try {
+        // Get the text content from the code block
+        const code = codeBlock.textContent;
+        // Use clipboard API to copy the code
+        await navigator.clipboard.writeText(code);
+        
+        // Show success state by changing the icon
+        button.innerHTML = '<i class="fa-solid fa-check"></i>';
+        button.classList.add('success');
+        
+        // Reset button state after 2 seconds
+        setTimeout(() => {
+          button.innerHTML = '<i class="fa-regular fa-copy"></i>';
+          button.classList.remove('success');
+        }, 2000);
+      } catch (err) {
+        console.error('Failed to copy code:', err);
+      }
+    });
+    
+    return button;
+  }
+
+  // function finds all code blocks and adds copy buttons to them
+  function addCopyButtonsToCodeBlocks(messageDiv) {
+    messageDiv.querySelectorAll('pre code').forEach(codeBlock => {
+      const pre = codeBlock.parentElement;
+      // Only add button if it doesn't already exist
+      if (!pre.querySelector('.copy-button')) {
+        const copyButton = createCopyButton(codeBlock);
+        pre.appendChild(copyButton);
+      }
+    });
+  }
 
   // Track think tag visibility state
   let showThinkTags = true;
@@ -97,7 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
               if (parsedChunk.message?.content) {
                 const content = parsedChunk.message.content;
 
-                // Process content character by character to handle think tags
                 for (let i = 0; i < content.length; i++) {
                   if (content.substr(i, 7) === '<think>') {
                     isInThinkTag = true;
@@ -127,14 +170,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     fullMessage += content[i];
                   }
 
-                  // Only update DOM/scroll after accumulating some characters
                   accumulatedChars++;
                   if (accumulatedChars >= 10 || i === content.length - 1) {
+                    //Added copy button initialization after rendering message
                     messageDiv.innerHTML = marked.parse(fullMessage);
-                    // Apply highlight.js to any new code blocks
+                    // Apply syntax highlighting to code blocks
                     messageDiv.querySelectorAll('pre code').forEach(block => {
                       hljs.highlightElement(block);
                     });
+                    //Add copy buttons to any code blocks
+                    addCopyButtonsToCodeBlocks(messageDiv);
                     debouncedScroll();
                     accumulatedChars = 0;
                   }
@@ -146,7 +191,6 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
 
-        // final scroll to ensure we're at the bottom
         setTimeout(() => {
           chatBox.scrollTo({
             top: chatBox.scrollHeight,
@@ -170,6 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // addMessage function to include copy button functionality
   function addMessage(message, sender) {
     const messageDiv = document.createElement('div');
     messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
@@ -178,10 +223,12 @@ document.addEventListener('DOMContentLoaded', () => {
       messageDiv.textContent = message;
     } else {
       messageDiv.innerHTML = marked.parse(message);
-      // Apply highlight.js to code blocks in the message
+      // syntax highlighting to code blocks
       messageDiv.querySelectorAll('pre code').forEach(block => {
         hljs.highlightElement(block);
       });
+      // add copy buttons to code blocks
+      addCopyButtonsToCodeBlocks(messageDiv);
     }
 
     chatBox.appendChild(messageDiv);

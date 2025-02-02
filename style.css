@@ -243,7 +243,6 @@ input:checked + .toggle-slider:before {
   margin: 12px 0;
   position: relative;
 }
-
 .bot-message pre code {
   display: block;
   padding: 0;
@@ -259,21 +258,34 @@ input:checked + .toggle-slider:before {
   padding: 0 !important;
 }
 
-/* scrollbar for code blocks */
-/* .bot-message pre::-webkit-scrollbar {
-  height: 8px;
+/* Show copy button on hover */
+.bot-message pre:hover .copy-button {
+  opacity: 1;
 }
 
-.bot-message pre::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
+/* Copy button styles */
+.copy-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 4px 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
   border-radius: 4px;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s, background-color 0.2s;
+}
+.copy-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
-.bot-message pre::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
+/* Success state */
+.copy-button.success {
+  background-color: rgba(40, 167, 69, 0.2);
 }
-
-.bot-message pre::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
-} */
