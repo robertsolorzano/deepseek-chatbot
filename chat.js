@@ -243,4 +243,18 @@ document.addEventListener('DOMContentLoaded', () => {
       sendButton.classList.remove('visible');
     }
   });
+
+  const maxHeight = 150; // Set the max height you want before scrolling starts
+
+  userInput.addEventListener("input", function () {
+      // Reset height to auto, so it can grow dynamically up to max height
+      this.style.height = "auto";
+      
+      // Check if the scrollHeight exceeds maxHeight
+      if (this.scrollHeight <= maxHeight) {
+          this.style.height = this.scrollHeight + "px"; // Grow the height if below maxHeight
+      } else {
+          this.style.height = maxHeight + "px"; // Limit height and show scrollbar
+      }
+  });
 });
