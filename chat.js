@@ -13,6 +13,27 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Debounce function to limit scroll calls
+  function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
+
+  // Debounced scroll function
+  const debouncedScroll = debounce(() => {
+    chatBox.scrollTo({
+      top: chatBox.scrollHeight,
+      behavior: 'smooth'
+    });
+  }, 10); //value to control scroll frequency
+
   // Function to handle sending a message
   const sendMessage = async () => {
     const message = userInput.value.trim();
@@ -43,6 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let isInThinkTag = false;
         let hasThinkContent = false;
         let thinkStartIndex = -1;
+        let accumulatedChars = 0;
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
@@ -73,7 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
                   if (content.substr(i, 8) === '</think>') {
                     isInThinkTag = false;
                     if (!hasThinkContent) {
-                      // Remove empty think tag
                       fullMessage = fullMessage.substring(0, thinkStartIndex);
                     } else {
                       fullMessage += '</div>';
@@ -91,8 +112,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     fullMessage += content[i];
                   }
 
-                  messageDiv.innerHTML = marked.parse(fullMessage);
-                  scrollToBottom();
+                  // Only update DOM/scroll after accumulating some characters
+                  accumulatedChars++;
+                  if (accumulatedChars >= 10 || i === content.length - 1) {
+                    messageDiv.innerHTML = marked.parse(fullMessage);
+                    debouncedScroll();
+                    accumulatedChars = 0;
+                  }
                 }
               }
             } catch (e) {
@@ -101,6 +127,14 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
 
+        // final scroll to ensure were at the bottom
+        setTimeout(() => {
+          chatBox.scrollTo({
+            top: chatBox.scrollHeight,
+            behavior: 'auto'
+          });
+        }, 10);
+
       } catch (error) {
         console.error('Error communicating with API:', error);
         addMessage("Sorry, there was an error processing your request.", 'bot');
@@ -108,13 +142,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Event listener for the send button click
   sendButton.addEventListener('click', sendMessage);
 
-  // Event listener for the Enter key press in the textarea
   userInput.addEventListener('keydown', (event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault(); // Prevents adding a new line
+      event.preventDefault();
       sendMessage();
     }
   });
@@ -130,14 +162,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     chatBox.appendChild(messageDiv);
-    scrollToBottom();
-  }
-
-  function scrollToBottom() {
-    const scrollOptions = {
-      top: chatBox.scrollHeight,
-      behavior: 'smooth'
-    };
-    chatBox.scrollTo(scrollOptions);
+    debouncedScroll();
   }
 });
