@@ -3,6 +3,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const userInput = document.getElementById('user-input');
   const chatBox = document.getElementById('chat-box');
 
+  // Configure marked to use highlight.js
+  marked.setOptions({
+    highlight: function(code, language) {
+      if (language && hljs.getLanguage(language)) {
+        try {
+          return hljs.highlight(code, { language }).value;
+        } catch (err) {
+          console.error('Highlight.js error:', err);
+        }
+      }
+      return code; // Use original code if language not found
+    },
+    langPrefix: 'hljs language-'
+  });
+
   // Track think tag visibility state
   let showThinkTags = true;
   const thinkToggle = document.getElementById('think-toggle');
@@ -32,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
       top: chatBox.scrollHeight,
       behavior: 'smooth'
     });
-  }, 10); //value to control scroll frequency
+  }, 10);
 
   // Function to handle sending a message
   const sendMessage = async () => {
@@ -116,6 +131,10 @@ document.addEventListener('DOMContentLoaded', () => {
                   accumulatedChars++;
                   if (accumulatedChars >= 10 || i === content.length - 1) {
                     messageDiv.innerHTML = marked.parse(fullMessage);
+                    // Apply highlight.js to any new code blocks
+                    messageDiv.querySelectorAll('pre code').forEach(block => {
+                      hljs.highlightElement(block);
+                    });
                     debouncedScroll();
                     accumulatedChars = 0;
                   }
@@ -127,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
 
-        // final scroll to ensure were at the bottom
+        // final scroll to ensure we're at the bottom
         setTimeout(() => {
           chatBox.scrollTo({
             top: chatBox.scrollHeight,
@@ -159,6 +178,10 @@ document.addEventListener('DOMContentLoaded', () => {
       messageDiv.textContent = message;
     } else {
       messageDiv.innerHTML = marked.parse(message);
+      // Apply highlight.js to code blocks in the message
+      messageDiv.querySelectorAll('pre code').forEach(block => {
+        hljs.highlightElement(block);
+      });
     }
 
     chatBox.appendChild(messageDiv);
@@ -173,5 +196,4 @@ document.addEventListener('DOMContentLoaded', () => {
       sendButton.classList.remove('visible');
     }
   });
-  
 });
